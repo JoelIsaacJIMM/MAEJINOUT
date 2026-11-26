@@ -1,0 +1,213 @@
+{
+  "info": {
+    "_postman_id": "ba4fd5d8-9136-4bfc-becb-a9b2df116150",
+    "name": "MAEJ INOUT API",
+    "description": "Colección para probar la API REST local. Inicia el servidor con npm start y usa http://localhost:3000 como baseUrl.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "movementId", "value": "" },
+    { "key": "equipmentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Salud",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "Movimientos",
+      "item": [
+        {
+          "name": "Crear ingreso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Ingreso creado', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('movementId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"income\",\n  \"date\": \"2026-10-31\",\n  \"concept\": \"Venta de producto\",\n  \"amount\": 2500.00,\n  \"method\": \"Transferencia\",\n  \"notes\": \"Ingreso de prueba Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/transactions"
+          }
+        },
+        {
+          "name": "Crear gasto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Gasto creado', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('movementId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"expense\",\n  \"date\": \"2026-10-31\",\n  \"concept\": \"Pago de internet\",\n  \"category\": \"Servicios\",\n  \"amount\": 500.00,\n  \"method\": \"Tarjeta\",\n  \"notes\": \"Gasto de prueba Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/transactions"
+          }
+        },
+        {
+          "name": "Listar movimientos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/transactions"
+          }
+        },
+        {
+          "name": "Filtrar ingresos del mes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/transactions?type=income&month=2026-10"
+          }
+        },
+        {
+          "name": "Consultar movimiento creado",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/transactions/{{movementId}}"
+          }
+        },
+        {
+          "name": "Actualizar movimiento creado",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concept\": \"Movimiento actualizado desde Postman\",\n  \"notes\": \"Edición de prueba\"\n}"
+            },
+            "url": "{{baseUrl}}/api/transactions/{{movementId}}"
+          }
+        },
+        {
+          "name": "Eliminar movimiento creado",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/transactions/{{movementId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipos",
+      "item": [
+        {
+          "name": "Listar equipos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/equipment"
+          }
+        },
+        {
+          "name": "Crear equipo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Equipo creado', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('equipmentId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop para diseño\",\n  \"type\": \"Cómputo\",\n  \"date\": \"2026-10-31\",\n  \"amount\": 18000.00,\n  \"supplier\": \"Proveedor local\",\n  \"method\": \"Transferencia\",\n  \"status\": \"Planeado\"\n}"
+            },
+            "url": "{{baseUrl}}/api/equipment"
+          }
+        },
+        {
+          "name": "Actualizar equipo creado",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Comprado\",\n  \"supplier\": \"Proveedor confirmado\"\n}"
+            },
+            "url": "{{baseUrl}}/api/equipment/{{equipmentId}}"
+          }
+        },
+        {
+          "name": "Eliminar equipo creado",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/equipment/{{equipmentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fondo de inversión",
+      "item": [
+        {
+          "name": "Actualizar saldo de octubre",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"month\": \"2026-10\",\n  \"amount\": 32000.00\n}"
+            },
+            "url": "{{baseUrl}}/api/investment-fund"
+          }
+        },
+        {
+          "name": "Consultar saldos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/investment-fund"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reportes",
+      "item": [
+        {
+          "name": "Panel de octubre",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/dashboard?month=2026-10"
+          }
+        },
+        {
+          "name": "Resumen anual 2026",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/monthly-summary?year=2026"
+          }
+        }
+      ]
+    }
+  ]
+}
